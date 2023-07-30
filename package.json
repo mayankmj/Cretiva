@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@headlessui/react": "^1.7.15",
+    "@mui/material": "^5.14.2",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "20.4.1",
     "@types/react": "18.2.14",
@@ -27,6 +30,6 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@grafbase/sdk": "^0.1.1"
+    "@grafbase/sdk": "^0.3.0"
   }
 }
