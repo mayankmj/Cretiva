@@ -1,5 +1,6 @@
-import { createUserMutation, getUserQuery } from "@/graphql";
-import { Query } from "@grafbase/sdk/dist/src/query";
+import { ProjectForm } from "@/common.types";
+import { createProjectMutation, createUserMutation, getUserQuery } from "@/graphql";
+// import { Query } from "@grafbase/sdk/dist/src/query";
 import { GraphQLClient } from "graphql-request";
 
 
@@ -41,5 +42,50 @@ export const createUser = (name: string, email:string, avatarUrl: string) => {
         }
     }
         return makeGraphQLRequest(createUserMutation ,variables);
+}
+
+export const uploadImage = async(imagePath: string) =>{
+    try {
+        // need a backend end point for the api 
+        const response = await fetch(`${serverUrl}/api/upload`,{
+            method: 'POST',
+            body: JSON.stringify({path: imagePath})
+        })
+        //publish url on the cloudinary is returned
+        return response.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const fetchToken = async() =>{
+    try {
+        const response = await fetch(`${serverUrl}/api/auth/token`);
+        return response.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+// it is called by Project Form on submitting
+export const createNewProject =  async(form: ProjectForm,
+creatorId: string, token: string) => {
+    // upload image to cloudinary
+    const imageUrl = await uploadImage(form.image);
+
+    if(imageUrl.url){
+        // for user authorization check
+        client.setHeader("Authorization",`Bearer ${token}`)
+        const variables = {
+            input: {
+                ...form,
+                image: imageUrl.url,
+                createdBy: {
+                    link: creatorId
+                }
+            }
+        }
+        return makeGraphQLRequest(createProjectMutation , variables);
+    }
 }
 
